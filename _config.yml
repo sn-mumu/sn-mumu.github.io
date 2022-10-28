@@ -21,7 +21,7 @@ timezone: Asia/Shanghai
 
 title: 睦mu的博客                          # the main title
 
-tagline: 欢迎来到睦mu的博客   # it will display as the sub-title
+tagline: 生活 | 工作 | 学习 | 分享   # it will display as the sub-title
 
 description: >-                        # used by seo meta and the atom feed
   生活 | 工作 | 学习 | 分享 
