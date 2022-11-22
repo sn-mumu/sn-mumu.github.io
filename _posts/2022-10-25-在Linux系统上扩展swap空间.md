@@ -4,7 +4,7 @@ author: mumu
 date: 2020-10-25 16:48:00 +0800
 categories: [Linux,内存,swap]
 tags: [Linux,swap,内存]
-pin: true
+pin: false
 ---
 
 # 在Linux系统上扩展swap空间
