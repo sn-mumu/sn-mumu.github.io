@@ -1,13 +1,13 @@
 ---
-title: Kubernetes（k8s）入门
+title: Kubernetes（k8s）概述
 author: mumu
 date: 2023-05-22 11:00:00 +0800
-categories: [Kubernetes,Kubernetes入门]
-tags: [Kubernetes,k8s,Kubernetes入门]
+categories: [Kubernetes,Kubernetes概述]
+tags: [Kubernetes,k8s,Kubernetes概述]
 pin: false
 ---
 
-# Kubernetes入门[^1]
+# Kubernetes概述[^1]
 
 ## 1  kubernetes 概述  
 
@@ -78,33 +78,26 @@ pin: false
 1. **<font color='red' style='background-color:' size=''>kubelet</font>**  ：master派到node节点的代表，管理本机容器
 2. **<font color='red' style='background-color:' size=''>kube proxy</font>**  ：提供网络代理，负载均衡等操作
 
-P4
+## 4 <font color='red' style='background-color:' size=''>K8s核心概念</font>
 
+### 4.1. Pod
 
+1. 最小部署单元
+2. 一组容器的集合
+3. 共享网络
+4. 生命周期*短暂*
 
+### 4.2. Controller  
 
+1. 确保预期pod副本数量
+2. 无状态应用部署
+3. 有状态应用部署
+4. 确保所有的node运行同一个pod
+5. 一次性任务和定时任务
 
+### 4.3. Service
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+1. 定义一组pod的访问规则
 
 
 
