@@ -32,6 +32,82 @@ pin: false
 
 > Kubeadm 是一个 K8s 部署工具， 提供 kubeadm init 和 kubeadm join， 用于快速部署 Kubernetes 集群。  
 
+1. 安装3台centos7虚拟机
+
+   + 2G-RAM 2-Core 30GB-Disk
+   + 集群间网络之间互通
+   + 可访问外网
+   + 禁用swap分区
+
+2. 对三台虚拟机进行初始化操作
+
+   + 关闭防火墙
+
+     ```shell
+     $ systemctl stop firewalld
+     $ systemctl disable firewalld  
+     ```
+
+   + 关闭selinux
+
+     ```shell
+     $ sed -i 's/enforcing/disabled/' /etc/selinux/config # 永久
+     $ setenforce 0 # 临时
+     ```
+
+   + 关闭swap
+
+     ```shell
+     $ swapoff -a # 临时
+     $ vim /etc/fstab # 永久
+     ```
+
+   + 配置主机名
+
+     ```shell
+     $ hostnamectl set-hostname <hostname>
+     ```
+
+   + 在 master 添加 hosts
+
+     ```shell
+     $ cat >> /etc/hosts << EOF
+     192.168.88.201 k8smaster
+     192.168.88.211 k8snode1
+     192.168.88.212 k8snode2
+     EOF
+
+   + 将桥接的 IPv4 流量传递到 iptables 的链
+
+     ```shell
+     $ cat > /etc/sysctl.d/k8s.conf << EOF
+     net.bridge.bridge-nf-call-ip6tables = 1
+     net.bridge.bridge-nf-call-iptables = 1
+     EOF
+     $ sysctl --system # 生效
+     ```
+
+   + 时间同步  
+
+     ```shell
+     $ yum install ntpdate -y
+     $ ntpdate time.windows.com
+     ```
+
+   + 所有节点安装 Docker/kubeadm/kubelet  
+
+   + 部署 Kubernetes Master  
+
+   + 安装 Pod 网络插件（ CNI）  
+
+   + 加入 Kubernetes Node  
+
+   + 测试 kubernetes 集群  
+
+   
+
+   
+
 ### 3.2. 二进制包  
 
 > 从 github 下载发行版的二进制包， 手动部署每个组件， 组成Kubernetes 集群。  
