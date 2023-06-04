@@ -72,9 +72,9 @@ pin: false
 
      ```shell
      $ cat >> /etc/hosts << EOF
-     192.168.88.201 k8smaster
-     192.168.88.211 k8snode1
-     192.168.88.212 k8snode2
+     192.168.233.128 k8smaster
+     192.168.88.201 k8snode1
+     192.168.88.202 k8snode2
      EOF
 
    + 将桥接的 IPv4 流量传递到 iptables 的链
@@ -96,16 +96,111 @@ pin: false
 
    + 所有节点安装 Docker/kubeadm/kubelet  
 
-   + 部署 Kubernetes Master  
+     + docker
 
-   + 安装 Pod 网络插件（ CNI）  
+       1. 安装docker
 
-   + 加入 Kubernetes Node  
-
-   + 测试 kubernetes 集群  
-
+          ```shell
+          $ wget https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo -O/etc/yum.repos.d/docker-ce.repo
+          $ yum -y install docker-ce-18.06.1.ce-3.el7
+          $ systemctl enable docker && systemctl start docker
+          $ docker --version
+          ```
    
-
+       2. 设置docker镜像加速器
+   
+          ```shell
+          $ cat > /etc/docker/daemon.json << EOF
+          {
+          	"registry-mirrors": ["https://b9pmyelo.mirror.aliyuncs.com"]
+          } 
+          EOF
+          ```
+   
+     + 安装 kubeadm， kubelet 和 kubectl  
+   
+       1. 添加 yum 源 
+   
+          ```shell
+          $ cat > /etc/yum.repos.d/kubernetes.repo << EOF
+          [kubernetes]
+          name=Kubernetes
+          baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64
+          enabled=1
+          gpgcheck=0
+          repo_gpgcheck=0
+          gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg
+          https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
+          EOF
+          ```
+   
+       2. 安装 kubeadm， kubelet 和 kubectl  
+   
+          ```shell
+          $ yum install -y kubelet-1.18.0 kubeadm-1.18.0 kubectl-1.18.0
+          $ systemctl enable kubelet
+          ```
+   
+   + 部署 Kubernetes Master  
+   
+     1. 在master执行 `master`
+   
+        > *由于默认拉取镜像地址 k8s.gcr.io 国内无法访问， 这里指定阿里云镜像仓库地址*
+        >
+        > | apiserver          | 当前节点IP  |
+        > | ------------------ | ----------- |
+        > | image-repository   | 镜像仓库    |
+        > | kubernetes-version | k8s版本     |
+        > | service-cidr       | service子网 |
+        > | pod-network-cidr   | pod子网     |
+   
+        ```shell
+        $ kubeadm init \
+        --apiserver-advertise-address=192.168.233.128 \
+        --image-repository registry.aliyuncs.com/google_containers \
+        --kubernetes-version v1.18.0 \
+        --service-cidr=10.96.0.0/12 \
+        --pod-network-cidr=10.244.0.0/16
+        ```
+   
+     2. 使用 kubectl 工具 `master`
+   
+        ```shell
+        $ mkdir -p $HOME/.kube
+        $ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+        $ sudo chown $(id -u):$(id -g) $HOME/.kube/config
+        $ kubectl get node	#查看node节点
+        ```
+   
+   + 安装 Pod 网络插件（ CNI） 
+   
+     ```shell
+     $ kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
+     $ kubectl get pods -n kube-system
+     ```
+   
+   + 加入 Kubernetes Node  
+   
+     1. 在node节点join 到master `node`
+   
+        > 默认token有效时间为24小时，当过期之后，该token就不可用了。这时就需要重新创建token
+        >
+        > ```shell
+        > $ kubeadm token create --print-jion-command
+        > ```
+   
+        ```shell
+        $ kubeadm join 192.168.233.128:6443 --token 0e5ail.y028snx5brdnakut  --discovery-token-ca-cert-hash sha256:e30473763f3c0e925220ea64d5c4c5d6ba641b033f7caf607b33fcf81bd19746
+        ```
+   
+        
+   
+     2. 
+   
+   + 测试 kubernetes 集群  
+   
+   
+   
    
 
 ### 3.2. 二进制包  
