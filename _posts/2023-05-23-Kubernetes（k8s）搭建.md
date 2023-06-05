@@ -39,6 +39,8 @@ pin: false
    + 可访问外网
    + 禁用swap分区
 
+   ![image-20230605190839754](https://raw.githubusercontent.com/sn-mumu/cloud-storage/main/PicGo/2023/04/20230605190847.png)
+
 2. 对三台虚拟机进行初始化操作
 
    + 关闭防火墙
@@ -72,9 +74,9 @@ pin: false
 
      ```shell
      $ cat >> /etc/hosts << EOF
-     192.168.233.128 k8smaster
-     192.168.88.201 k8snode1
-     192.168.88.202 k8snode2
+     192.168.8.11 k8smaster
+     192.168.8.101 k8snode1
+     192.168.8.102 k8snode2
      EOF
 
    + 将桥接的 IPv4 流量传递到 iptables 的链
@@ -106,21 +108,21 @@ pin: false
           $ systemctl enable docker && systemctl start docker
           $ docker --version
           ```
-   
+
        2. 设置docker镜像加速器
-   
+
           ```shell
           $ cat > /etc/docker/daemon.json << EOF
           {
-          	"registry-mirrors": ["https://b9pmyelo.mirror.aliyuncs.com"]
+          	"registry-mirrors": ["https://g41et2nr.mirror.aliyuncs.com"]
           } 
           EOF
           ```
-   
+
      + 安装 kubeadm， kubelet 和 kubectl  
-   
+
        1. 添加 yum 源 
-   
+
           ```shell
           $ cat > /etc/yum.repos.d/kubernetes.repo << EOF
           [kubernetes]
@@ -133,18 +135,18 @@ pin: false
           https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
           EOF
           ```
-   
+
        2. 安装 kubeadm， kubelet 和 kubectl  
-   
+
           ```shell
           $ yum install -y kubelet-1.18.0 kubeadm-1.18.0 kubectl-1.18.0
           $ systemctl enable kubelet
           ```
-   
+
    + 部署 Kubernetes Master  
-   
+
      1. 在master执行 `master`
-   
+
         > *由于默认拉取镜像地址 k8s.gcr.io 国内无法访问， 这里指定阿里云镜像仓库地址*
         >
         > | apiserver          | 当前节点IP  |
@@ -153,59 +155,144 @@ pin: false
         > | kubernetes-version | k8s版本     |
         > | service-cidr       | service子网 |
         > | pod-network-cidr   | pod子网     |
-   
+
         ```shell
         $ kubeadm init \
-        --apiserver-advertise-address=192.168.233.128 \
+        --apiserver-advertise-address=192.168.8.11 \
         --image-repository registry.aliyuncs.com/google_containers \
         --kubernetes-version v1.18.0 \
         --service-cidr=10.96.0.0/12 \
         --pod-network-cidr=10.244.0.0/16
         ```
-   
+
      2. 使用 kubectl 工具 `master`
-   
+
         ```shell
         $ mkdir -p $HOME/.kube
         $ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
         $ sudo chown $(id -u):$(id -g) $HOME/.kube/config
         $ kubectl get node	#查看node节点
         ```
-   
-   + 安装 Pod 网络插件（ CNI） 
-   
-     ```shell
-     $ kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
-     $ kubectl get pods -n kube-system
-     ```
-   
+
+     3. 安装 Pod 网络插件( **CNI** )`master`
+
+        ```shell
+        $ kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
+        $ kubectl get pods -n kube-system
+        NAME                                READY   STATUS    RESTARTS   AGE
+        coredns-7ff77c879f-7nhpx            1/1     Running   0          9m58s
+        coredns-7ff77c879f-j8cvb            1/1     Running   0          9m58s
+        etcd-k8smaster                      1/1     Running   0          10m
+        kube-apiserver-k8smaster            1/1     Running   0          10m
+        kube-controller-manager-k8smaster   1/1     Running   0          10m
+        kube-proxy-hjc7m                    1/1     Running   0          4m48s
+        kube-proxy-k2h99                    1/1     Running   0          4m39s
+        kube-proxy-zrvtj                    1/1     Running   0          9m58s
+        kube-scheduler-k8smaster            1/1     Running   0          10m         
+        ```
+
    + 加入 Kubernetes Node  
-   
+
      1. 在node节点join 到master `node`
-   
+
         > 默认token有效时间为24小时，当过期之后，该token就不可用了。这时就需要重新创建token
         >
         > ```shell
         > $ kubeadm token create --print-jion-command
         > ```
-   
+
         ```shell
-        $ kubeadm join 192.168.233.128:6443 --token 0e5ail.y028snx5brdnakut  --discovery-token-ca-cert-hash sha256:e30473763f3c0e925220ea64d5c4c5d6ba641b033f7caf607b33fcf81bd19746
+        $ kubeadm join 192.168.8.11:6443 --token gqicpf.wr12fuy0u0drtm6w \
+            --discovery-token-ca-cert-hash sha256:b7ddb2cb04aae940f74ddf7ca70c359b3870ad8ffb88148f819499d4e308b8d1
         ```
-   
-        
-   
-     2. 
-   
+
    + 测试 kubernetes 集群  
-   
-   
-   
-   
+
+     > 在 Kubernetes 集群中创建一个 pod， 验证是否正常运行  
+     >
+     > 访问地址： http://NodeIP:Port  
+
+     ```shell
+     $ kubectl create deployment nginx --image=nginx
+     $ kubectl get pod
+     NAME                    READY   STATUS    RESTARTS   AGE
+     nginx-f89759699-v62mc   1/1     Running   0          45s
+     $ kubectl expose deployment nginx --port=80 --type=NodePort
+     $ kubectl get pod,svc
+     NAME                        READY   STATUS    RESTARTS   AGE
+     pod/nginx-f89759699-v62mc   1/1     Running   0          77s
+     
+     NAME                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+     service/kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP        15m
+     service/nginx        NodePort    10.107.238.18   <none>        80:30688/TCP   11s
+     ```
+
 
 ### 3.2. 二进制包  
 
 > 从 github 下载发行版的二进制包， 手动部署每个组件， 组成Kubernetes 集群。  
+
+#### 3.2.1. 安装要求
+
+1. 一台或多台机器， 操作系统 CentOS7.x-86_x64
+2. 硬件配置： 2GB 或更多 RAM， 2 个 CPU 或更多 CPU， 硬盘 30GB 或更多
+3. 集群中所有机器之间网络互通
+4. 可以访问外网， 需要拉取镜像， 如果服务器不能上网， 需要提前下载镜像并导入节点
+5. 禁止 swap 分区  
+
+#### 3.2.2. 准备环境
+
+1. 软件环境
+
+   | 软件       | 版本                    |
+   | ---------- | ----------------------- |
+   | 操作系统   | CentOS7.8_x64 （ mini） |
+   | Docker     | 19-ce                   |
+   | Kubernetes | 1.19                    |
+
+2. 服务器规划
+
+   | 角色       | IP            | 组件                                                         |
+   | ---------- | ------------- | ------------------------------------------------------------ |
+   | k8s-master | 192.168.8.12  | kube-apiserver， kube-controller-manager， kube -scheduler， etcd |
+   | k8s-node1  | 192.168.8.111 | kubelet， kube-proxy， docker etcd                           |
+   | k8s-node2  | 192.168.8.112 | kubelet， kube-proxy， docker etcd                           |
+
+#### 3.2.3. 操作系统初始化配置
+
+```shell
+# 关闭防火墙
+systemctl stop firewalld
+systemctl disable firewalld
+# 关闭 selinux
+sed -i 's/enforcing/disabled/' /etc/selinux/config # 永久
+setenforce 0 # 临时
+# 关闭 swap
+swapoff -a # 临时
+sed -ri 's/.*swap.*/#&/' /etc/fstab # 永久
+# 根据规划设置主机名
+hostnamectl set-hostname <hostname>
+# 在 master 添加 hosts
+cat >> /etc/hosts << EOF
+192.168.8.12 m1
+192.168.8.111 n1
+EOF
+# 将桥接的 IPv4 流量传递到 iptables 的链
+cat > /etc/sysctl.d/k8s.conf << EOF
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+sysctl --system # 生效
+# 时间同步
+yum install ntpdate -y
+ntpdate time.windows.com
+```
+
+#### 3.2.4. 部署Etcd集群
+
+#### 3.2.5. 安装docker
+
+#### 3.2.6. 部署Master Node
 
 ### 3.3. 区别
 
