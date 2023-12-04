@@ -1,13 +1,13 @@
 ---
-title: HarmonyOS开发
+title: HarmonyOS开发 工程目录
 author: mumu
 date: 2023-11-17 15:10:00 +0800
 categories: [华为,HarmonyOS]
-tags: [华为,HarmonyOS]
+tags: [华为,HarmonyOS,工程目录]
 pin: false
 ---
 
-# HarmonyOS开发
+# 工程目录
 
 ## 1 运行Hello World
 
