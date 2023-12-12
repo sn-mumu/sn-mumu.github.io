@@ -222,45 +222,79 @@ struct Index {
 
 ![img](https://raw.githubusercontent.com/sn-mumu/cloud-storage/main/PicGo/2023/10/202312111809478.png)
 
-- Create状态，在UIAbility实例创建时触发，系统会调用onCreate回调。可以在onCreate回调中进行相关初始化操作。
+- **<font color='red' style='background-color:' size=''>Create</font>**状态，<font color='cornflowerblue' style='background-color:' size=''>在UIAbility实例创建时触发，系统会调用onCreate回调</font>。可以在onCreate回调中进行相关初始化操作。
 
-  ```
-  import UIAbility from '@ohos.app.ability.UIAbility';import window from '@ohos.window';
-  export default class EntryAbility extends UIAbility {    onCreate(want: Want, launchParam: AbilityConstant.LaunchParam) {        // 应用初始化        ...    }    ...}
+  ```typescript
+  import UIAbility from '@ohos.app.ability.UIAbility';
+  import window from '@ohos.window';
+  
+  export default class EntryAbility extends UIAbility {
+      onCreate(want: Want, launchParam: AbilityConstant.LaunchParam) {
+          // 应用初始化
+          ...
+      }
+      ...
+  }
   ```
 
   例如用户打开电池管理应用，在应用加载过程中，在UI页面可见之前，可以在onCreate回调中读取当前系统的电量情况，用于后续的UI页面展示。
 
-- UIAbility实例创建完成之后，在进入Foreground之前，系统会创建一个WindowStage。每一个UIAbility实例都对应持有一个WindowStage实例。
+- <font color='cornflowerblue' style='background-color:' size=''>UIAbility实例创建完成之后，在进入Foreground之前，系统会创建一个WindowStage。每一个UIAbility实例都对应持有一个WindowStage实例</font>。
 
   WindowStage为本地窗口管理器，用于管理窗口相关的内容，例如与界面相关的获焦/失焦、可见/不可见。
 
-  可以在onWindowStageCreate回调中，设置UI页面加载、设置WindowStage的事件订阅。
+  可以在<font color='red' style='background-color:' size=''>onWindowStageCreate</font>回调中，设置UI页面加载、设置WindowStage的事件订阅。
 
   在onWindowStageCreate(windowStage)中通过loadContent接口设置应用要加载的页面，Window接口的使用详见[窗口开发指导](https://developer.harmonyos.com/cn/docs/documentation/doc-guides-V3/application-window-stage-0000001427584712-V3?catalogVersion=V3)。
 
-  ```
-  import UIAbility from '@ohos.app.ability.UIAbility';import window from '@ohos.window';
-  export default class EntryAbility extends UIAbility {    ...
-      onWindowStageCreate(windowStage: window.WindowStage) {        // 设置UI页面加载        // 设置WindowStage的事件订阅（获焦/失焦、可见/不可见）        ...
-          windowStage.loadContent('pages/Index', (err, data) => {            ...        });    }    ...}
+  ```typescript
+  import UIAbility from '@ohos.app.ability.UIAbility';
+  import window from '@ohos.window';
+  
+  export default class EntryAbility extends UIAbility {
+      ...
+  
+      onWindowStageCreate(windowStage: window.WindowStage) {
+          // 设置UI页面加载
+          // 设置WindowStage的事件订阅（获焦/失焦、可见/不可见）
+          ...
+  
+          windowStage.loadContent('pages/Index', (err, data) => {
+              ...
+          });
+      }
+      ...
+  }
   ```
 
   例如用户打开游戏应用，正在打游戏的时候，有一个消息通知，打开消息，消息会以弹窗的形式弹出在游戏应用的上方，此时，游戏应用就从获焦切换到了失焦状态，消息应用切换到了获焦状态。对于消息应用，在onWindowStageCreate回调中，会触发获焦的事件回调，可以进行设置消息应用的背景颜色、高亮等操作。
 
-- Foreground和Background状态，分别在UIAbility切换至前台或者切换至后台时触发。
+- <font color='red' style='background-color:' size=''>Foreground和Background</font>状态，<font color='cornflowerblue' style='background-color:' size=''>分别在UIAbility切换至前台或者切换至后台时触发</font>。
 
-  分别对应于onForeground回调和onBackground回调。
+  分别对应于<font color='cornflowerblue' style='background-color:' size=''>onForeground回调和onBackground</font>回调。
 
   onForeground回调，在UIAbility的UI页面可见之前，即UIAbility切换至前台时触发。可以在onForeground回调中申请系统需要的资源，或者重新申请在onBackground中释放的资源。
 
   onBackground回调，在UIAbility的UI页面完全不可见之后，即UIAbility切换至后台时候触发。可以在onBackground回调中释放UI页面不可见时无用的资源，或者在此回调中执行较为耗时的操作，例如状态保存等。
 
-  ```
-  import UIAbility from '@ohos.app.ability.UIAbility';import window from '@ohos.window';
-  export default class EntryAbility extends UIAbility {    ...
-      onForeground() {        // 申请系统需要的资源，或者重新申请在onBackground中释放的资源        ...    }
-      onBackground() {        // 释放UI页面不可见时无用的资源，或者在此回调中执行较为耗时的操作        // 例如状态保存等        ...    }}
+  ```typescript
+  import UIAbility from '@ohos.app.ability.UIAbility';
+  import window from '@ohos.window';
+  
+  export default class EntryAbility extends UIAbility {
+      ...
+  
+      onForeground() {
+          // 申请系统需要的资源，或者重新申请在onBackground中释放的资源
+          ...
+      }
+  
+      onBackground() {
+          // 释放UI页面不可见时无用的资源，或者在此回调中执行较为耗时的操作
+          // 例如状态保存等
+          ...
+      }
+  }
   ```
 
   例如用户打开地图应用查看当前地理位置的时候，假设地图应用已获得用户的定位权限授权。在UI页面显示之前，可以在onForeground回调中打开定位功能，从而获取到当前的位置信息。
@@ -269,124 +303,187 @@ struct Index {
 
 - 前面我们了解了UIAbility实例创建时的onWindowStageCreate回调的相关作用。
 
-  对应于onWindowStageCreate回调。在UIAbility实例销毁之前，则会先进入onWindowStageDestroy回调，我们可以在该回调中释放UI页面资源。
+  对应于onWindowStageCreate回调。在UIAbility实例销毁之前，则会先进入<font color='cornflowerblue' style='background-color:' size=''>onWindowStageDestroy</font>回调，我们可以在该回调中释放UI页面资源。
 
-  ```
-  import UIAbility from '@ohos.app.ability.UIAbility';import window from '@ohos.window';
-  export default class EntryAbility extends UIAbility {    ...
-      onWindowStageDestroy() {        // 释放UI页面资源        ...    }}
+  ```typescript
+  import UIAbility from '@ohos.app.ability.UIAbility';
+  import window from '@ohos.window';
+  
+  export default class EntryAbility extends UIAbility {
+      ...
+  
+      onWindowStageDestroy() {
+          // 释放UI页面资源
+          ...
+      }
+  }
   ```
 
   例如在onWindowStageCreate中设置的获焦/失焦等WindowStage订阅事件。
 
-- Destroy状态，在UIAbility销毁时触发。可以在onDestroy回调中进行系统资源的释放、数据的保存等操作。
+- <font color='red' style='background-color:' size=''>Destroy</font>状态，在UIAbility销毁时触发。可以在onDestroy回调中进行系统资源的释放、数据的保存等操作。
 
+  ```typescript
+  import UIAbility from '@ohos.app.ability.UIAbility';
+  import window from '@ohos.window';
+  
+  export default class EntryAbility extends UIAbility {
+      ...
+  
+      onDestroy() {
+          // 系统资源的释放、数据的保存等
+          ...
+      }
+  }
   ```
-  import UIAbility from '@ohos.app.ability.UIAbility';import window from '@ohos.window';
-  export default class EntryAbility extends UIAbility {    ...
-      onDestroy() {        // 系统资源的释放、数据的保存等        ...    }}
-  ```
-
+  
   例如用户使用应用的程序退出功能，会调用UIAbilityContext的terminalSelf()方法，从而完成UIAbility销毁。或者用户使用最近任务列表关闭该UIAbility实例时，也会完成UIAbility的销毁。
 
 ## UIAbility的启动模式
 
+<font color='red' style='background-color:' size=''>对于浏览器或者新闻等应用</font>，用户在打开该应用，并浏览访问相关内容后，回到桌面，再次打开该应用，显示的仍然是用户当前访问的界面。
 
+<font color='red' style='background-color:' size=''>对于应用的分屏操作</font>，用户希望使用两个不同应用（例如备忘录应用和图库应用）之间进行分屏，也希望能使用同一个应用（例如备忘录应用自身）进行分屏。
 
-对于浏览器或者新闻等应用，用户在打开该应用，并浏览访问相关内容后，回到桌面，再次打开该应用，显示的仍然是用户当前访问的界面。
+<font color='red' style='background-color:' size=''>对于文档应用</font>，用户从文档应用中打开一个文档内容，回到文档应用，继续打开同一个文档，希望打开的还是同一个文档内容。
 
-对于应用的分屏操作，用户希望使用两个不同应用（例如备忘录应用和图库应用）之间进行分屏，也希望能使用同一个应用（例如备忘录应用自身）进行分屏。
-
-对于文档应用，用户从文档应用中打开一个文档内容，回到文档应用，继续打开同一个文档，希望打开的还是同一个文档内容。
-
-基于以上场景的考虑，UIAbility当前支持singleton（单实例模式）、multiton（多实例模式）和specified（指定实例模式）3种启动模式。
+<font color='red' style='background-color:' size=''>基于以上场景的考虑，UIAbility当前支持singleton（单实例模式）、multiton（多实例模式）和specified（指定实例模式）3种启动模式</font>。
 
 对启动模式的详细说明如下：
 
-- singleton（单实例模式）
+- **<font color='red' style='background-color:' size=''>singleton</font>**（单实例模式）
 
   当用户打开浏览器或者新闻等应用，并浏览访问相关内容后，回到桌面，再次打开该应用，显示的仍然是用户当前访问的界面。
 
-  这种情况下可以将UIAbility配置为singleton（单实例模式）。每次调用startAbility()方法时，如果应用进程中该类型的UIAbility实例已经存在，则复用系统中的UIAbility实例，系统中只存在唯一一个该UIAbility实例。
+  这种情况下可以将UIAbility配置为singleton（单实例模式）。<font color='cornflowerblue' style='background-color:' size=''>每次调用startAbility()方法时，如果应用进程中该类型的UIAbility实例已经存在，则复用系统中的UIAbility实例，系统中只存在唯一一个该UIAbility实例</font>。
 
-  即在最近任务列表中只存在一个该类型的UIAbility实例。
+  <font color='cornflowerblue' style='background-color:' size=''>即在最近任务列表中只存在一个该类型的UIAbility实例</font>。
 
   ![img](https://raw.githubusercontent.com/sn-mumu/cloud-storage/main/PicGo/2023/10/202312111448716.png)
 
-- multiton（多实例模式）
+- **<font color='red' style='background-color:' size=''>multiton</font>**（多实例模式）
 
   用户在使用分屏功能时，希望使用两个不同应用（例如备忘录应用和图库应用）之间进行分屏，也希望能使用同一个应用（例如备忘录应用自身）进行分屏。
 
-  这种情况下可以将UIAbility配置为multiton（多实例模式）。每次调用startAbility()方法时，都会在应用进程中创建一个该类型的UIAbility实例。
+  这种情况下可以将UIAbility配置为multiton（多实例模式）。<font color='cornflowerblue' style='background-color:' size=''>每次调用startAbility()方法时，都会在应用进程中创建一个该类型的UIAbility实例</font>。
 
-  即在最近任务列表中可以看到有多个该类型的UIAbility实例。
+  <font color='cornflowerblue' style='background-color:' size=''>即在最近任务列表中可以看到有多个该类型的UIAbility实例</font>。
 
   ![img](https://raw.githubusercontent.com/sn-mumu/cloud-storage/main/PicGo/2023/10/202312111448176.gif)
 
-- specified（指定实例模式）
+- **<font color='red' style='background-color:' size=''>specified</font>**（指定实例模式）
 
   用户打开文档应用，从文档应用中打开一个文档内容，回到文档应用，继续打开同一个文档，希望打开的还是同一个文档内容；以及在文档应用中新建一个新的文档，每次新建文档，希望打开的都是一个新的空白文档内容。
 
-  这种情况下可以将UIAbility配置为specified（指定实例模式）。在UIAbility实例新创建之前，允许开发者为该实例创建一个字符串Key，新创建的UIAbility实例绑定Key之后，后续每次调用startAbility方法时，都会询问应用使用哪个Key对应的UIAbility实例来响应startAbility请求。如果匹配有该UIAbility实例的Key，则直接拉起与之绑定的UIAbility实例，否则创建一个新的UIAbility实例。运行时由UIAbility内部业务决定是否创建多实例。
+  这种情况下可以将UIAbility配置为specified（指定实例模式）。<font color='cornflowerblue' style='background-color:' size=''>在UIAbility实例新创建之前，允许开发者为该实例创建一个字符串Key，新创建的UIAbility实例绑定Key之后，后续每次调用startAbility方法时，都会询问应用使用哪个Key对应的UIAbility实例来响应startAbility请求。如果匹配有该UIAbility实例的Key，则直接拉起与之绑定的UIAbility实例，否则创建一个新的UIAbility实例。运行时由UIAbility内部业务决定是否创建多实例</font>。
 
   ![点击放大](https://raw.githubusercontent.com/sn-mumu/cloud-storage/main/PicGo/2023/10/202312111448995.png)
 
 ### singleton启动模式
 
-
-
 singleton启动模式，也是默认情况下的启动模式。
 
 singleton启动模式，每次调用startAbility()启动UIAbility时，如果应用进程中该类型的UIAbility实例已经存在，则复用系统中的UIAbility实例，系统中只存在唯一一个该UIAbility实例。
 
-singleton启动模式的开发使用，在module.json5文件中的“launchType”字段配置为“singleton”即可。
+singleton启动模式的开发使用，<font color='cornflowerblue' style='background-color:' size=''>在module.json5文件中的“launchType”字段配置为“singleton”即可。</font>
 
-```
-{   "module": {     ...     "abilities": [       {         "launchType": "singleton",         ...       }     ]  }}
+```json
+{
+   "module": {
+     ...
+     "abilities": [
+       {
+         "launchType": "singleton",
+         ...
+       }
+     ]
+  }
+}
 ```
 
 ### multiton启动模式
 
-
-
 multiton启动模式，每次调用startAbility()方法时，都会在应用进程中创建一个该类型的UIAbility实例。
 
-multiton启动模式的开发使用，在module.json5文件中的“launchType”字段配置为“multiton”即可。
+multiton启动模式的开发使用，<font color='cornflowerblue' style='background-color:' size=''>在module.json5文件中的“launchType”字段配置为“multiton”即可</font>。
 
-```
-{   "module": {     ...     "abilities": [       {         "launchType": "multiton",         ...       }     ]  }}
+```json
+{
+   "module": {
+     ...
+     "abilities": [
+       {
+         "launchType": "multiton",
+         ...
+       }
+     ]
+  }
+}
 ```
 
 ### specified启动模式
 
-
-
-specified启动模式，根据业务需要是否创建一个新的UIAbility实例。在UIAbility实例创建之前，会先进入AbilityStage的onAcceptWant回调，在onAcceptWant回调中为每一个UIAbility实例创建一个Key，后续每次调用startAbility()方法创建该类型的UIAbility实例都会询问使用哪个Key对应的UIAbility实例来响应startAbility()请求。
+specified启动模式，根据业务需要是否创建一个新的UIAbility实例。<font color='red' style='background-color:' size=''>在UIAbility实例创建之前，会先进入AbilityStage的onAcceptWant回调</font>，<font color='cornflowerblue' style='background-color:' size=''>在onAcceptWant回调中为每一个UIAbility实例创建一个Key，后续每次调用startAbility()方法创建该类型的UIAbility实例都会询问使用哪个Key对应的UIAbility实例来响应startAbility()请求</font>。
 
 specified启动模式的开发使用的步骤如下所示。
 
-1. 在module.json5文件中的“launchType”字段配置为“specified”。
+1. 在<font color='cornflowerblue' style='background-color:' size=''>module.json5文件中的“launchType”字段配置为“specified”</font>。
 
-   ```
-   {   "module": {     ...     "abilities": [       {         "launchType": "specified",         ...       }     ]  }}
+   ```json
+   {
+      "module": {
+        ...
+        "abilities": [
+          {
+            "launchType": "specified",
+            ...
+          }
+        ]
+     }
+   }
    ```
 
 2. 在调用startAbility()方法的want参数中，增加一个自定义参数来区别UIAbility实例，例如增加一个“instanceKey”自定义参数。
 
-   ```
-   // 在启动指定实例模式的UIAbility时，给每一个UIAbility实例配置一个独立的Key标识function getInstance() {    ...}let context:common.UIAbilityContext = ...; // context为调用方UIAbility的UIAbilityContextlet want: Want = {    deviceId: '', // deviceId为空表示本设备    bundleName: 'com.example.myapplication',    abilityName: 'SpecifiedAbility',    moduleName: 'specified', // moduleName非必选    parameters: { // 自定义信息        instanceKey: getInstance(),    },}context.startAbility(want).then(() => {    ...}).catch((err: BusinessError) => {    ...})
+   ```typescript
+   // 在启动指定实例模式的UIAbility时，给每一个UIAbility实例配置一个独立的Key标识
+   function getInstance() {
+       ...
+   }
+   let context:common.UIAbilityContext = ...; // context为调用方UIAbility的UIAbilityContext
+   let want: Want = {
+       deviceId: '', // deviceId为空表示本设备
+       bundleName: 'com.example.myapplication',
+       abilityName: 'SpecifiedAbility',
+       moduleName: 'specified', // moduleName非必选
+       parameters: { // 自定义信息
+           instanceKey: getInstance(),
+       },
+   }
+   context.startAbility(want).then(() => {
+       ...
+   }).catch((err: BusinessError) => {
+       ...
+   })
    ```
 
-3. 在被拉起方UIAbility对应的AbilityStage的onAcceptWant生命周期回调中，解析传入的want参数，获取“instanceKey”自定义参数。根据业务需要返回一个该UIAbility实例的字符串Key标识。如果之前启动过此Key标识的UIAbility，则会将之前的UIAbility拉回前台并获焦，而不创建新的实例，否则创建新的实例并启动。
+3. <font color='red' style='background-color:' size=''>在被拉起方UIAbility对应的AbilityStage的onAcceptWant生命周期回调中，解析传入的want参数，获取“instanceKey”自定义参数</font>。根据业务需要返回一个该UIAbility实例的字符串Key标识。如果之前启动过此Key标识的UIAbility，则会将之前的UIAbility拉回前台并获焦，而不创建新的实例，否则创建新的实例并启动。
 
+   ```typescript
+   onAcceptWant(want: want): string {
+       // 在被启动方的AbilityStage中，针对启动模式为specified的UIAbility返回一个UIAbility实例对应的一个Key值
+       // 当前示例指的是device Module的EntryAbility
+      if (want.abilityName === 'MainAbility') {
+           return `DeviceModule_MainAbilityInstance_${want.parameters.instanceKey}`;
+       }
+       return '';
+   }
    ```
-   onAcceptWant(want: want): string {    // 在被启动方的AbilityStage中，针对启动模式为specified的UIAbility返回一个UIAbility实例对应的一个Key值    // 当前示例指的是device Module的EntryAbility   if (want.abilityName === 'MainAbility') {        return `DeviceModule_MainAbilityInstance_${want.parameters.instanceKey}`;    }    return '';}
-   ```
-
+   
    例如在文档应用中，可以对不同的文档实例内容绑定不同的Key值。当每次新建文档的时候，可以传入不同的新Key值（如可以将文件的路径作为一个Key标识），此时AbilityStage中启动UIAbility时都会创建一个新的UIAbility实例；当新建的文档保存之后，回到桌面，或者新打开一个已保存的文档，回到桌面，此时再次打开该已保存的文档，此时AbilityStage中再次启动该UIAbility时，打开的仍然是之前原来已保存的文档界面。
-
+   
    操作举例如下表所示。
-
+   
    | 操作序号 | 文档内容                                     | UIAbility实例      |
    | -------- | -------------------------------------------- | ------------------ |
    | 1        | 打开文件A                                    | 对应UIAbility实例1 |
