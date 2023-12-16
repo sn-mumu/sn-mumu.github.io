@@ -66,7 +66,7 @@ struct TextDemo {
 
 ![img](https://raw.githubusercontent.com/sn-mumu/cloud-storage/main/PicGo/2023/10/202312121618666.png)
 
-除了通用属性和文本样式设置，下面列举了一些Text组件的常用属性的使用。
+除了通用属性和文本样式设置，下面列举了一些Text组件的常用属性的使用。 
 
 #### 设置文本对齐方式
 
