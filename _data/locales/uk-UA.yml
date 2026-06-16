@@ -40,10 +40,10 @@ copyright:
     Публікації на сайті захищено ліцензією Creative Commons Attribution 4.0 International (CC BY 4.0),
     якщо інше не вказано в тексті.
 
-meta: Powered by :PLATFORM with :THEME theme.
+meta: Powered by :PLATFORM with :THEME theme
 
 not_found:
-  statment: Вибачте, це посилання вказує на ресурс, що не існує.
+  statement: Вибачте, це посилання вказує на ресурс, що не існує.
 
 notification:
   update_found: Доступна нова версія вмісту.
@@ -60,6 +60,7 @@ post:
   read_time:
     unit: хвилин
     prompt: читання
+  edit: Редагувати цей пост
   relate_posts: Вас також може зацікавити
   share: Поділитися
   button:
@@ -70,8 +71,6 @@ post:
     share_link:
       title: Скопіювати посилання
       succeed: Посилання успішно скопійовано!
-  # pinned prompt of posts list on homepage
-  pin_prompt: Закріплено
 
 # categories page
 categories:
