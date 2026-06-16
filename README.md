@@ -1,12 +1,8 @@
 <!-- markdownlint-disable-next-line -->
 <div align="center">
 
-<<<<<<< HEAD
-  # Chirpy Jekyll Theme  
-=======
   <!-- markdownlint-disable-next-line -->
   # Chirpy Jekyll Theme
->>>>>>> upstream/master
 
   A minimal, responsive, and feature-rich Jekyll theme for technical writing.
 
@@ -61,13 +57,6 @@ Furthermore, thanks to everyone who contributed to the development of this proje
 
 This project is licensed under the [MIT License][license].
 
-<<<<<<< HEAD
-<!-- ReadMe links -->
-
-[jb]: https://www.jetbrains.com/?from=jekyll-theme-chirpy
-[cn-donation]: https://cotes2020.github.io/sponsor/
-
-=======
 [badge-ci]: https://img.shields.io/github/actions/workflow/status/cotes2020/jekyll-theme-chirpy/ci.yml?logo=github
 [badge-codacy]: https://img.shields.io/codacy/grade/4e556876a3c54d5e8f2d2857c4f43894?logo=codacy
 [badge-license]: https://img.shields.io/github/license/cotes2020/jekyll-theme-chirpy?color=goldenrod
@@ -86,4 +75,3 @@ This project is licensed under the [MIT License][license].
 [contributors]: https://github.com/cotes2020/jekyll-theme-chirpy/graphs/contributors
 [contributors-avatar]: https://contrib.rocks/image?repo=cotes2020/jekyll-theme-chirpy&columns=16&max=112
 [lib]: https://github.com/cotes2020/chirpy-static-assets
->>>>>>> upstream/master
