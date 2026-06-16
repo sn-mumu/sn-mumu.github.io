@@ -106,7 +106,7 @@ theme_mode:    # [light|dark]
 #
 # e.g. 'https://cdn.com' 
 # https://raw.githubusercontent.com/sn-mumu/cloud-storage/main/PicGo/202210241819040.png
-img_cdn: 'https://raw.githubusercontent.com/sn-mumu/cloud-storage/main'
+cdn: 'https://raw.githubusercontent.com/sn-mumu/cloud-storage/main'
 
 # the avatar on sidebar, support local or CORS resources
 avatar: '/PicGo/202210241819040.png'
