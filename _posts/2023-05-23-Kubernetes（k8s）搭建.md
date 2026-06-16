@@ -210,7 +210,7 @@ pin: false
 
      > 在 Kubernetes 集群中创建一个 pod， 验证是否正常运行  
      >
-     > 访问地址： http://NodeIP:Port  
+     > 访问地址： https://NodeIP:Port  
 
      ```shell
      $ kubectl create deployment nginx --image=nginx
@@ -329,4 +329,4 @@ ntpdate time.windows.com
 
 
 
-[^1]: [尚硅谷](http://www.atguigu.com/)
+[^1]: [尚硅谷](https://www.atguigu.com/)

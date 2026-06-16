@@ -24,7 +24,7 @@ pin: false
 6. 支持 DSL（Domain Specific Languages 领域特定语言）和其它简洁的语法，让代码变得易于阅读和维护。
 7. Groovy 是基于 Java 语言的，所以完全兼容 Java 语法,所以对于 java 程序员学习成本较低。
 
-详细了解请参考：[Apache Groovy](http://www.groovy-lang.org/index.html)
+详细了解请参考：[Apache Groovy](https://www.groovy-lang.org/index.html)
 
 ## 2 Groovy 安装<font color='cornflowerblue' style='background-color:' size=''> ^△^ </font> 
 
@@ -127,7 +127,7 @@ println(str2.getClass().toString())
 ### 4.3. 三个语句结构  
 
 Groovy 支持顺序结构从上向下依次解析、分支结构(if..else、if..else if ..else..、switch..case、for、while、do..while)
-具体参考官网：http://www.groovy-lang.org/semantics.html#_conditional_structures  
+具体参考官网：https://www.groovy-lang.org/semantics.html#_conditional_structures  
 
 ### 4.4. 类型及权限修饰符  
 
@@ -162,7 +162,7 @@ Groovy 支持顺序结构从上向下依次解析、分支结构(if..else、if..
 3. 如果<font color='red' style='background-color:' size=''>属性声明为 final，则不会生成 setter</font>。
 4. 一个源文件可能包含一个或多个类(但是如果一个文件不包含类定义的代码，则将其视为脚本)。脚本只是具有一些特殊约定的类,它们的名称与源文件相同(所以不要在脚本中包含与脚本源文件名相同的类定义)。  
 
-有关Groovy中各种各样的数据类型和权限修饰符及Goovy与Java区别请参考：http://www.groovy-lang.org/objectorientation.html#_modifiers_on_a_property  
+有关Groovy中各种各样的数据类型和权限修饰符及Goovy与Java区别请参考：https://www.groovy-lang.org/objectorientation.html#_modifiers_on_a_property  
 
 ### 4.5. 集合操作  
 
@@ -190,7 +190,7 @@ Groovy 支持顺序结构从上向下依次解析、分支结构(if..else、if..
 + `+、-`：支持 map 集合的加减操作
 + each():遍历 map 集合  
 
-请参考官网:http://www.groovy-lang.org/syntax.html#_number_type_suffixes  
+请参考官网:https://www.groovy-lang.org/syntax.html#_number_type_suffixes  
 
 ### 4.6. 类导入  
 
@@ -217,7 +217,7 @@ import java.math.BigDecimal
 
 *这样做是因为这些包中的类最常用。通过导入这些样板代码减少了*  
 
-参考官网地址：http://www.groovy-lang.org/structure.html#_imports  
+参考官网地址：https://www.groovy-lang.org/structure.html#_imports  
 
 ### 4.7. 异常处理  
 
@@ -239,7 +239,7 @@ try {
 }
 ```
 
-参考官网地址： http://www.groovy-lang.org/semantics.html#_try_catch_finally  
+参考官网地址： https://www.groovy-lang.org/semantics.html#_try_catch_finally  
 
 ### 4.8. 闭包  
 
@@ -273,4 +273,4 @@ try {
 
 
 
-[^1]: [尚硅谷](http://www.atguigu.com/) ↩
+[^1]: [尚硅谷](https://www.atguigu.com/) ↩
